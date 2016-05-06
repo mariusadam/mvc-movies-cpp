@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FilmCart" Collapsed="true">
+    <Position X="3" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAIAAAAAABAAAAQAADAAAAAIKAAA=</HashCode>
+      <FileName>src\cart\FilmCart.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Controller" Collapsed="true">
+    <Position X="7" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>BAAAICABAQAAAQAAAMIAgAAAHAAQAAgASCCAAIoGgAA=</HashCode>
+      <FileName>src\controller\controller.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Film" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEIAABEBAAAAAIQgAABABBAAAAAggABAEAQA=</HashCode>
+      <FileName>src\domain\Film.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FilmException" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAQAAAAAAAAAAAAAAACAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>src\domain\Film.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FilmValidator" Collapsed="true">
+    <Position X="11.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAABAAAAAAAAAAAAQAAAAAAAEAAAAgAA=</HashCode>
+      <FileName>src\domain\FilmValidator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ValidatorException" Collapsed="true">
+    <Position X="2.25" Y="1.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\domain\FilmValidator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRepository" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAACAAgAAAAAAAAAAAIAIAAA=</HashCode>
+      <FileName>src\repository\FileRepository.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Repository" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAIAAAAAIAAAAAAAgAAAAAAAAAAAAAAAAAIGAAA=</HashCode>
+      <FileName>src\repository\repository.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RepositoryException" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\repository\repository.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Console" Collapsed="true">
+    <Position X="4.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>0ECAAgAEAAAEEQEAAAAAAIACAAYAAEgAABABAAAgCAE=</HashCode>
+      <FileName>src\ui\console.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
