@@ -207,7 +207,7 @@ void Console::__fillRandomFlow() {
 		cout << "Enter a valid number next time!" << endl;
 		return;
 	}
-	__ctrl.fillRandom(howMany);
+	__ctrl.fillCartRandom(howMany);
 	auto& cart = __ctrl.getCartMovies();
 	cout << cart.size() << " movies had been added to the cart!" << endl;
 }

@@ -10,6 +10,9 @@
 #include <iterator>
 #include <ctype.h>
 #include <sstream>
+#include <algorithm>
+#include <stdlib.h>
+#include <time.h>
 
 
 void Controller::add(std::string title, std::string gen, int releaseYear, std::string mainActor) {
@@ -157,4 +160,35 @@ const std::vector<Film> Controller::getSortedByYearGenreDesc() const {
 	std::vector<Film> result{ getAll() };
 	sort(result.begin(), result.end(), [](const Film& f1, const Film& f2) {return ((f1.getReleaseYear() == f2.getReleaseYear()) ? (f1.getGen() > f2.getGen()) : (f1.getReleaseYear() > f2.getReleaseYear())); });
 	return result;
+}
+
+void Controller::fillRepoRandom(int howMany) {
+	srand(time(NULL));
+	std::string possible_chars{ "abcdefghijklmnoprstuvxyzQWERTYUIOPASDFGHJKLZXCVBNM" };
+	for (int i = 0; i < howMany; i++) {
+		int lgTitle = rand() % 10 + 2;
+		int lgGen = rand() % 10 + 2;
+		int lgMainActor = rand() % 10 + 2;
+		std::string title(lgTitle, ' ');
+		std::string gen(lgGen, ' ');
+		std::string mainActor(lgMainActor, ' ');
+		for (int j = 0; j < lgTitle; j++) {
+			int randomCharPoz = rand() % possible_chars.size();
+			title[j] = possible_chars[randomCharPoz];
+		}
+		for (int j = 0; j < lgGen; j++) {
+			int randomCharPoz = rand() % possible_chars.size();
+			gen[j] = possible_chars[randomCharPoz];
+		}
+		for (int j = 0; j < lgMainActor; j++) {
+			int randomCharPoz = rand() % possible_chars.size();
+			mainActor[j] = possible_chars[randomCharPoz];
+		}
+		try {
+			this->add(title, gen, 1980 + rand() % 40, mainActor);
+		}
+		catch (FilmException& ex) {
+
+		}
+	}
 }

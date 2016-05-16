@@ -36,6 +36,7 @@ public:
 
 	virtual void update(const Film& newFilm);
 
+	std::vector<Film> getBetween(int beginOffset = 0, int howMany = -1) const;
 };
 
 class RepositoryException : public FilmException {

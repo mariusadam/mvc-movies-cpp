@@ -68,9 +68,11 @@ public:
 		return __cart.getAll();
 	}
 
-	void fillRandom(const int howMany) {
+	void fillCartRandom(const int howMany) {
 		__cart.fillRandom(howMany);
 	}
+
+	void fillRepoRandom(int howMany);
 
 	void clearCart() {
 		__cart.clear();
