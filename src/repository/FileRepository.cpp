@@ -5,7 +5,7 @@
 void FileRepository::__saveToFile() {
 	std::string fileName = this->__fileName;
 	std::vector<Film>all = this->getAll();
-		std::ofstream out(fileName, std::ios::trunc);
+	std::ofstream out(fileName, std::ios::trunc);
 	if (out.is_open() == false) {
 		throw FilmException("Could not open file: " + fileName);
 	}

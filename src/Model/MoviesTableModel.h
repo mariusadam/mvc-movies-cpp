@@ -24,7 +24,7 @@ public:
 	}
 
 	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override {
-		if (role == Qt::DisplayRole || role == Qt::EditRole) {
+		if (role == Qt::DisplayRole) {
 			Film film = __movies[index.row()];
 			if (index.column() == 0) {
 				return QString::fromStdString(film.getTitle());

@@ -11,6 +11,7 @@
 #include <qtablewidget.h>
 #include <QComboBox>
 #include <QCheckBox>
+#include <qtabwidget.h>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMessageBox>
 #include <qlistwidget.h>
@@ -32,14 +33,19 @@ private:
 	//Ui::AppClass ui;
 	Controller& __ctrl;
 
+	QTabWidget* __tabWidget;
 	QWidget* __widgetMain;
+	QWidget* __widgetCart = new QWidget;
 	QTime __timeStamp;
 	QTableView* __moviesTableView = new QTableView;
+	QTableView* __cartTableView = new QTableView;
 	MoviesTableModel* __moviesTableModel = new MoviesTableModel({});
+	MoviesTableModel* __cartTableModel = new MoviesTableModel({});
 	QListView* __moviesListView = new QListView;
 	QLabel* __labelMoviesNumber;
+	QLabel* __labelCartMoviesNumber = new QLabel("");
 	QPushButton* __refresh;
-	QPushButton* __sortByActorButton;
+	QPushButton* __sortButton;
 	QPushButton* __sortByTitleButton;
 	QPushButton* __addButton;
 	QPushButton* __updateButton;
@@ -47,21 +53,35 @@ private:
 	QPushButton* __searchButton;
 	QPushButton* __quitButton;
 	QPushButton* __generateRandomButton;
+	QPushButton* __manageCartButton;
+	QPushButton* __addToCartButton;
+	QPushButton* __deleteFromCartButton;
+	QPushButton* __fillCartRandomButton;
+	QPushButton* __clearCartButton;
 	QPushButton* __undoButton;
-	QComboBox* __sortComboBox;
+	QComboBox* __sortByComboBox;
+	QComboBox* __sortDirectionComboBox;
 	QLineEdit* __titleLineEdit;
 	QLineEdit* __genLineEdit;
 	QLineEdit* __releaseYearLineEdit;
 	QLineEdit* __mainActorLineEdit;
 	QLineEdit* __searchLineEdit;
 	QLineEdit* __generateRandomLineEdit;
+	QLineEdit* __fillCartRandomLineEdit;
 
 	void __initComponents();
+	void __initMainWidget();
+	void __initCartWidget();
 	void __connectSignalsSlots();
+	void __connectMainWidgetSignalsSlots();
+	void __connectCartWidgetSignalsSlots();
 	void __refreshMainTable();
+	void __refreshCartTable();
 	void __reloadList(const std::vector<Film>& filme);
 	void __inLineDetalisEdit(const std::string& title, const std::string& gen, const std::string& releaseYear, const std::string& mainActor);
+	void __addComboBoxSortOptions();
 	void __displayError(const std::string& error);
+
 	private slots:
 	void __on_addButton_clicked();
 	void __on_selectedTableCell_clicked(const QModelIndex &index);
@@ -71,6 +91,9 @@ private:
 	void __on_generateRandomButton_clicked();
 	void __on_updateButton_clicked();
 	void __on_undoButton_clicked();
+	void __on_sortButton_clicked();
+	void __on_addToCartButton_clicked();
+	void __on_manageCartButton_clicked();
 
 public:
 	App(Controller& __ctrl) : __ctrl{ __ctrl } {

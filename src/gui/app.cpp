@@ -18,34 +18,26 @@ ui.setupUi(this);
 }
 */
 
-void App::__initComponents() {
+void App::__initMainWidget() {
 	QGridLayout* layoutMain = new QGridLayout;
-	setLayout(layoutMain);
 
 	this->__widgetMain = new QWidget;
-	setCentralWidget(__widgetMain);
 	__widgetMain->setLayout(layoutMain);
 
-	//adaug list si sub 2 butoane de sort
-	//QWidget* widgetMoviesList = new QWidget;
-	QHBoxLayout* layoutMoviesList = new QHBoxLayout;
-	//widgetMoviesList->setLayout(layoutMoviesList);
-	//__moviesListWidget = new QListWidget;
-	//__moviesListWidget->setLayout(layoutMoviesList);
-	//layoutMoviesList->addWidget(__moviesListWidget);
-
 	QWidget* widgetMovieListOperations = new QWidget;
-	QGridLayout* layoutMoviesListOperations = new QGridLayout;
-	this->__sortComboBox = new QComboBox;
-	layoutMoviesListOperations->addWidget(this->__sortComboBox);
+	QVBoxLayout* layoutMoviesListOperations = new QVBoxLayout;
 	widgetMovieListOperations->setLayout(layoutMoviesListOperations);
-	__sortByTitleButton = new QPushButton("Sort by title");
-	layoutMoviesListOperations->addWidget(__sortByTitleButton);
-	__sortByActorButton = new QPushButton("Sort by actor");
-	layoutMoviesListOperations->addWidget(__sortByActorButton);
-	__deleteButton = new QPushButton("Delete selected");
-	layoutMoviesListOperations->addWidget(__deleteButton);
-
+	this->__sortByComboBox = new QComboBox;
+	layoutMoviesListOperations->addWidget(this->__sortByComboBox);
+	this->__sortDirectionComboBox = new QComboBox;
+	layoutMoviesListOperations->addWidget(this->__sortDirectionComboBox);
+	this->__addComboBoxSortOptions();
+	this->__sortButton = new QPushButton("Sort");
+	layoutMoviesListOperations->addWidget(this->__sortButton);
+	this->__deleteButton = new QPushButton("Delete selected");
+	layoutMoviesListOperations->addWidget(this->__deleteButton);
+	this->__addToCartButton = new QPushButton("Add to cart");
+	layoutMoviesListOperations->addWidget(this->__addToCartButton);
 
 	//form pentru detalii
 	QWidget* widgetDetailsMovie = new QWidget;
@@ -94,22 +86,63 @@ void App::__initComponents() {
 	layoutMoviesTable->addWidget(this->__moviesTableView);
 
 	layoutMain->addWidget(widgetMoviesTable, 0, 0, 2, 2);
-	layoutMain->addWidget(widgetMovieListOperations, 1, 2);
+	layoutMain->addWidget(widgetMovieListOperations, 1, 2, 3, 1);
 	layoutMain->addWidget(widgetDetailsMovie, 3, 0);
 	layoutMain->addWidget(widgetSearchAndGenerate, 3, 1);
 	layoutMain->addWidget(widgetQuit, 5, 2);
 }
 
-void App::__connectSignalsSlots() {
+void App::__initCartWidget() {
+	QGridLayout* layoutCart = new QGridLayout;
+	this->__widgetCart->setLayout(layoutCart);
+
+	QWidget* widgetCartTable = new QWidget;
+	QVBoxLayout* layoutCartTable = new QVBoxLayout;
+	widgetCartTable->setLayout(layoutCartTable);
+	this->__labelCartMoviesNumber = new QLabel("Total movies: 0");
+	layoutCartTable->addWidget(this->__labelCartMoviesNumber);
+	this->__cartTableView = new QTableView;
+	layoutCartTable->addWidget(this->__cartTableView);
+
+	QWidget* widgetCartOperations = new QWidget;
+	QHBoxLayout* layoutCartOperations = new QHBoxLayout;
+	widgetCartOperations->setLayout(layoutCartOperations);
+	this->__deleteFromCartButton = new QPushButton("Delete selected");
+	layoutCartOperations->addWidget(this->__deleteFromCartButton);
+	this->__clearCartButton = new QPushButton("Empty the cart");
+	layoutCartOperations->addWidget(this->__clearCartButton);
+
+	QWidget* widgetFillRandom = new QWidget;
+	QFormLayout* layoutFormFillRandom = new QFormLayout;
+	widgetFillRandom->setLayout(layoutFormFillRandom);
+	QLabel* labelHowMany = new QLabel("How many:");
+	this->__fillCartRandomLineEdit = new QLineEdit;
+	layoutFormFillRandom->addRow(labelHowMany, this->__fillCartRandomLineEdit);
+	this->__fillCartRandomButton = new QPushButton("Fill random");
+	layoutFormFillRandom->addWidget(this->__fillCartRandomButton);
+
+	layoutCart->addWidget(widgetCartTable, 0, 0, 2, 2);
+	layoutCart->addWidget(widgetCartOperations, 2, 0);
+	layoutCart->addWidget(widgetFillRandom, 3, 0);
+
+	this->__refreshCartTable();
+}
+
+void App::__initComponents() {
+	this->__initMainWidget();
+	this->__initCartWidget();
+	this->__tabWidget = new QTabWidget;
+	this->__tabWidget->addTab(this->__widgetMain, "Main");
+	this->__tabWidget->addTab(this->__widgetCart, "Cart");
+	setCentralWidget(this->__tabWidget);
+}
+
+void App::__connectMainWidgetSignalsSlots() {
 	//cand se emite semnalul clicked de pe buton reincarc list
-	QObject::connect(__sortByTitleButton, &QPushButton::clicked, this, [&]() {
-		__reloadList(__ctrl.getSortedByTitleAsc());
-	});
-	QObject::connect(__sortByActorButton, &QPushButton::clicked, this, [&]() {
-		__reloadList(__ctrl.getSortedByMainActorAsc());
-	});
+	QObject::connect(__sortButton, &QPushButton::clicked, this, &App::__on_sortButton_clicked);
 	//QObject::connect(__moviesListWidget, &QListWidget::itemSelectionChanged, this, &App::__on_selectMovieFromList);
 	QObject::connect(__addButton, &QPushButton::clicked, this, &App::__on_addButton_clicked);
+	QObject::connect(__addToCartButton, &QPushButton::clicked, this, &App::__on_addToCartButton_clicked);
 	QObject::connect(__updateButton, &QPushButton::clicked, this, &App::__on_updateButton_clicked);
 	QObject::connect(__undoButton, &QPushButton::clicked, this, &App::__on_undoButton_clicked);
 	QObject::connect(__deleteButton, &QPushButton::clicked, this, &App::__on_deleteButton_clicked);
@@ -118,6 +151,15 @@ void App::__connectSignalsSlots() {
 	QObject::connect(__generateRandomButton, &QPushButton::clicked, this, &App::__on_generateRandomButton_clicked);
 	QObject::connect(__moviesTableView, &QTableView::clicked, this, &App::__on_selectedTableCell_clicked);
 	QObject::connect(__moviesTableModel, &QAbstractTableModel::dataChanged, this, &App::__on_selectedTableCell_clicked);
+}
+
+void App::__connectCartWidgetSignalsSlots() {
+
+}
+
+void App::__connectSignalsSlots() {
+	this->__connectMainWidgetSignalsSlots();
+	this->__connectCartWidgetSignalsSlots();
 }
 
 void App::__refreshMainTable() {
@@ -179,22 +221,20 @@ void App::__on_selectedTableCell_clicked(const QModelIndex &index) {
 void App::__on_deleteButton_clicked() {
 	std::string errors{ "" };
 	QModelIndexList selectedRows = __moviesTableView->selectionModel()->selectedRows();
-	for (auto& index : selectedRows)	{
-		if (index.isValid() == false) {
-			__displayError("You have not selected any movie yet");
-			return;
-		}
+	if (selectedRows.empty()) {
+		__displayError("You have not selected any movie yet");
+		return;
+	}
+	for (auto& index : selectedRows) {
 		int row = index.row();
 		std::string title = index.sibling(row, 0).data().toString().toStdString();
 		try {
-			qDebug() << title.c_str() << "\n";
 			__ctrl.del(title);
 		}
 		catch (FilmException& ex) {
 			errors += ex.getMsg() + "\n";
 		}
 	}
-	qDebug() << selectedRows.size() << "\n";
 	__refreshMainTable();
 
 	if (!errors.empty()) {
@@ -257,11 +297,104 @@ void App::__on_undoButton_clicked() {
 	}
 }
 
+void App::__addComboBoxSortOptions() {
+	this->__sortByComboBox->addItem("Sort by title");
+	this->__sortByComboBox->addItem("Sort by main actor");
+	this->__sortByComboBox->addItem("Sort by year and genre");
+	this->__sortDirectionComboBox->addItem("Asc");
+	this->__sortDirectionComboBox->addItem("Desc");
+	this->__sortByComboBox->setCurrentIndex(2);
+	this->__sortDirectionComboBox->setCurrentIndex(1);
+}
+
+void App::__on_sortButton_clicked() {
+	int sortModeIndex = this->__sortDirectionComboBox->currentIndex();
+	int sortByIndex = this->__sortByComboBox->currentIndex();
+	switch (sortByIndex) {
+	case 0: {
+		if (sortModeIndex == 0) {
+			this->__reloadList(this->__ctrl.getSortedByTitleAsc());
+		}
+		else {
+			this->__reloadList(this->__ctrl.getSortedByTitleDesc());
+		}
+		break;
+	}
+	case 1: {
+		if (sortModeIndex == 0) {
+			this->__reloadList(this->__ctrl.getSortedByMainActorAsc());
+		}
+		else {
+			this->__reloadList(this->__ctrl.getSortedByMainActorDesc());
+		}
+		break;
+	}
+	case 2: {
+		if (sortModeIndex == 0) {
+			this->__reloadList(this->__ctrl.getSortedByYearGenreAsc());
+		}
+		else {
+			this->__reloadList(this->__ctrl.getSortedByYearGenreDesc());
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void App::__on_addToCartButton_clicked() {
+	std::string errors{ "" };
+	QModelIndexList selectedRows = __moviesTableView->selectionModel()->selectedRows();
+	if (selectedRows.empty()) {
+		__displayError("You have not selected any movie yet");
+		return;
+	}
+	for (auto& index : selectedRows) {
+		int row = index.row();
+		std::string title = index.sibling(row, 0).data().toString().toStdString();
+		std::string gen = index.sibling(row, 1).data().toString().toStdString();
+		int releaseYear = index.sibling(row, 2).data().toInt();
+		std::string mainActor = index.sibling(row, 3).data().toString().toStdString();
+		try {
+			__ctrl.addToCart(Film{ title, gen, releaseYear, mainActor });
+		}
+		catch (FilmException& ex) {
+			errors += ex.getMsg() + "\n";
+		}
+	}
+	if (!errors.empty()) {
+		__displayError(errors);
+	}
+	this->__refreshCartTable();
+}
+
+void App::__refreshCartTable() {
+	std::vector<Film> films = this->__ctrl.getCartMovies();
+	std::string tmp = "Total: " + std::to_string(films.size());
+	this->__labelCartMoviesNumber->setText(tmp.c_str());
+	this->__cartTableModel = new MoviesTableModel(films);
+	this->__cartTableView->setModel(this->__cartTableModel);
+	this->__cartTableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+
+}
+
+void App::__on_manageCartButton_clicked() {
+	QGridLayout* layoutCart = new QGridLayout;
+	this->__widgetCart->setLayout(layoutCart);
+	layoutCart->addWidget(this->__labelCartMoviesNumber, 0, 0);
+	layoutCart->addWidget(this->__cartTableView, 1, 0, 2, 2);
+
+	this->__refreshCartTable();
+
+	this->__widgetCart->show();
+}
+
 void App::__on_quitButton_clicked() {
 	qApp->quit();
 }
 
-App::~App()
-{
+App::~App() {
 
 }
