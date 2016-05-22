@@ -52,12 +52,14 @@ private:
 	QPushButton* __deleteButton;
 	QPushButton* __searchButton;
 	QPushButton* __quitButton;
+	QPushButton* __quitCartButton;
 	QPushButton* __generateRandomButton;
 	QPushButton* __manageCartButton;
 	QPushButton* __addToCartButton;
 	QPushButton* __deleteFromCartButton;
 	QPushButton* __fillCartRandomButton;
 	QPushButton* __clearCartButton;
+	QPushButton* __exportCartButton;
 	QPushButton* __undoButton;
 	QComboBox* __sortByComboBox;
 	QComboBox* __sortDirectionComboBox;
@@ -68,6 +70,7 @@ private:
 	QLineEdit* __searchLineEdit;
 	QLineEdit* __generateRandomLineEdit;
 	QLineEdit* __fillCartRandomLineEdit;
+	QLineEdit* __exportFileNameLineEdit;
 
 	void __initComponents();
 	void __initMainWidget();
@@ -77,7 +80,8 @@ private:
 	void __connectCartWidgetSignalsSlots();
 	void __refreshMainTable();
 	void __refreshCartTable();
-	void __reloadList(const std::vector<Film>& filme);
+	void __reloadMainTable(const std::vector<Film>& filme);
+	void __reloadCartTable(const std::vector<Film>& films);
 	void __inLineDetalisEdit(const std::string& title, const std::string& gen, const std::string& releaseYear, const std::string& mainActor);
 	void __addComboBoxSortOptions();
 	void __displayError(const std::string& error);
@@ -95,12 +99,16 @@ private:
 	void __on_addToCartButton_clicked();
 	void __on_manageCartButton_clicked();
 
+	void __on_fillCartRandomButton_clicked();
+	void __on_deleteFromCartButton_clicked();
+	void __on_clearCartButton_clicked();
+	void __on_exportCartButton_clicked();
+
 public:
 	App(Controller& __ctrl) : __ctrl{ __ctrl } {
 		//boot the application here!
 		__initComponents();
 		__connectSignalsSlots();
-		__refreshMainTable();
 	}
 	~App();
 };

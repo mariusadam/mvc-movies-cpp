@@ -178,7 +178,6 @@
     <ClCompile Include="src\tests\domain\test_Film.cpp" />
     <ClCompile Include="src\tests\domain\test_FilmValidator.cpp" />
     <ClCompile Include="src\tests\util\test_DynamicVector.cpp" />
-    <ClCompile Include="src\ui\console.cpp" />
     <ClCompile Include="src\util\DynamicVector.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +233,6 @@
     <ClInclude Include="src\tests\domain\test_Film.h" />
     <ClInclude Include="src\tests\domain\test_FilmValidator.h" />
     <ClInclude Include="src\tests\util\test_DynamicVector.h" />
-    <ClInclude Include="src\ui\console.h" />
     <ClInclude Include="src\util\DynamicVector.h" />
   </ItemGroup>
   <ItemGroup>

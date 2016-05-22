@@ -16,6 +16,7 @@ protected:
 public:
 	FilmCart(const Repository& repo) : __repo{ repo } {};
 	void add(const Film& film);
+	void del(const std::string& title);
 	void fillRandom(const int howMany);
 
 	void clear() {

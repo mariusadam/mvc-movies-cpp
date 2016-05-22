@@ -42,6 +42,10 @@ public:
 
 	void del(const std::string& title);
 
+	void delFromCart(const std::string& title) {
+		this->__cart.del(title);
+	}
+
 	void update(const  Film& newFilm);
 
 	const std::vector<Film> search(const std::string& title) const;

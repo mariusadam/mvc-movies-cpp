@@ -71,11 +71,7 @@ void App::__initMainWidget() {
 	this->__undoButton = new QPushButton("Undo");
 	formLayoutSearchAndGenerate->addWidget(this->__undoButton);
 
-	QWidget* widgetQuit = new QWidget;
-	QHBoxLayout* layoutQuit = new QHBoxLayout;
-	widgetQuit->setLayout(layoutQuit);
-	__quitButton = new QPushButton("Quit");
-	layoutQuit->addWidget(__quitButton);
+	this->__quitButton = new QPushButton("Quit");
 
 	QWidget* widgetMoviesTable = new QWidget;
 	QVBoxLayout* layoutMoviesTable = new QVBoxLayout;
@@ -89,7 +85,9 @@ void App::__initMainWidget() {
 	layoutMain->addWidget(widgetMovieListOperations, 1, 2, 3, 1);
 	layoutMain->addWidget(widgetDetailsMovie, 3, 0);
 	layoutMain->addWidget(widgetSearchAndGenerate, 3, 1);
-	layoutMain->addWidget(widgetQuit, 5, 2);
+	layoutMain->addWidget(this->__quitButton, 5, 2);
+
+	this->__refreshMainTable();
 }
 
 void App::__initCartWidget() {
@@ -104,13 +102,13 @@ void App::__initCartWidget() {
 	this->__cartTableView = new QTableView;
 	layoutCartTable->addWidget(this->__cartTableView);
 
-	QWidget* widgetCartOperations = new QWidget;
-	QHBoxLayout* layoutCartOperations = new QHBoxLayout;
-	widgetCartOperations->setLayout(layoutCartOperations);
+	//QWidget* widgetCartOperations = new QWidget;
+	//QVBoxLayout* layoutCartOperations = new QVBoxLayout;
+	//widgetCartOperations->setLayout(layoutCartOperations);
 	this->__deleteFromCartButton = new QPushButton("Delete selected");
-	layoutCartOperations->addWidget(this->__deleteFromCartButton);
+	//layoutCartOperations->addWidget(this->__deleteFromCartButton);
 	this->__clearCartButton = new QPushButton("Empty the cart");
-	layoutCartOperations->addWidget(this->__clearCartButton);
+	//layoutCartOperations->addWidget(this->__clearCartButton);
 
 	QWidget* widgetFillRandom = new QWidget;
 	QFormLayout* layoutFormFillRandom = new QFormLayout;
@@ -121,9 +119,24 @@ void App::__initCartWidget() {
 	this->__fillCartRandomButton = new QPushButton("Fill random");
 	layoutFormFillRandom->addWidget(this->__fillCartRandomButton);
 
+	QWidget* widgetExport = new QWidget;
+	QFormLayout* layoutFormExport = new QFormLayout;
+	widgetExport->setLayout(layoutFormExport);
+	QLabel* labelFileName = new QLabel("Enter file name:");
+	this->__exportFileNameLineEdit = new QLineEdit;
+	layoutFormExport->addRow(labelFileName, this->__exportFileNameLineEdit);
+	this->__exportCartButton = new QPushButton("Export as html");
+	layoutFormExport->addWidget(this->__exportCartButton);
+
+	this->__quitCartButton = new QPushButton("Quit");
+
 	layoutCart->addWidget(widgetCartTable, 0, 0, 2, 2);
-	layoutCart->addWidget(widgetCartOperations, 2, 0);
-	layoutCart->addWidget(widgetFillRandom, 3, 0);
+	//layoutCart->addWidget(widgetCartOperations, 3, 0, 1, 1);
+	layoutCart->addWidget(widgetFillRandom, 2, 0);
+	layoutCart->addWidget(this->__clearCartButton, 2, 1);
+	layoutCart->addWidget(widgetExport, 3, 0);
+	layoutCart->addWidget(this->__deleteFromCartButton, 3, 1);
+	layoutCart->addWidget(this->__quitCartButton, 4, 3);
 
 	this->__refreshCartTable();
 }
@@ -154,7 +167,18 @@ void App::__connectMainWidgetSignalsSlots() {
 }
 
 void App::__connectCartWidgetSignalsSlots() {
-
+	QObject::connect(__fillCartRandomButton, &QPushButton::clicked, this, &App::__on_fillCartRandomButton_clicked);
+	QObject::connect(__deleteFromCartButton, &QPushButton::clicked, this, &App::__on_deleteFromCartButton_clicked);
+	QObject::connect(__quitCartButton, &QPushButton::clicked, this, &App::__on_quitButton_clicked);
+	QObject::connect(__clearCartButton, &QPushButton::clicked, this, &App::__on_clearCartButton_clicked);
+	QObject::connect(__exportCartButton, &QPushButton::clicked, this, &App::__on_exportCartButton_clicked);
+	QObject::connect(__cartTableView, &QTableView::clicked, this, [&](const QModelIndex& index) {
+		if (index.isValid() == false) {
+			this->__displayError("You have not selected a valid cell!");
+		}
+		int row = index.row();
+		this->__cartTableView->selectRow(row);
+	});
 }
 
 void App::__connectSignalsSlots() {
@@ -163,7 +187,7 @@ void App::__connectSignalsSlots() {
 }
 
 void App::__refreshMainTable() {
-	__reloadList(__ctrl.getAll());
+	__reloadMainTable(__ctrl.getAll());
 }
 
 void App::__on_searchButton_clicked() {
@@ -171,7 +195,7 @@ void App::__on_searchButton_clicked() {
 	__searchLineEdit->clear();
 	try {
 		auto result = __ctrl.search(title);
-		__reloadList(result);
+		__reloadMainTable(result);
 	}
 	catch (FilmException& ex) {
 		__displayError(ex.getMsg());
@@ -179,7 +203,7 @@ void App::__on_searchButton_clicked() {
 
 }
 
-void App::__reloadList(const std::vector<Film>& films) {
+void App::__reloadMainTable(const std::vector<Film>& films) {
 	/*__moviesListWidget->clear();
 	for (const auto& film : films) {
 		QString title{ film.getTitle().c_str() };
@@ -313,28 +337,28 @@ void App::__on_sortButton_clicked() {
 	switch (sortByIndex) {
 	case 0: {
 		if (sortModeIndex == 0) {
-			this->__reloadList(this->__ctrl.getSortedByTitleAsc());
+			this->__reloadMainTable(this->__ctrl.getSortedByTitleAsc());
 		}
 		else {
-			this->__reloadList(this->__ctrl.getSortedByTitleDesc());
+			this->__reloadMainTable(this->__ctrl.getSortedByTitleDesc());
 		}
 		break;
 	}
 	case 1: {
 		if (sortModeIndex == 0) {
-			this->__reloadList(this->__ctrl.getSortedByMainActorAsc());
+			this->__reloadMainTable(this->__ctrl.getSortedByMainActorAsc());
 		}
 		else {
-			this->__reloadList(this->__ctrl.getSortedByMainActorDesc());
+			this->__reloadMainTable(this->__ctrl.getSortedByMainActorDesc());
 		}
 		break;
 	}
 	case 2: {
 		if (sortModeIndex == 0) {
-			this->__reloadList(this->__ctrl.getSortedByYearGenreAsc());
+			this->__reloadMainTable(this->__ctrl.getSortedByYearGenreAsc());
 		}
 		else {
-			this->__reloadList(this->__ctrl.getSortedByYearGenreDesc());
+			this->__reloadMainTable(this->__ctrl.getSortedByYearGenreDesc());
 		}
 		break;
 	}
@@ -369,13 +393,17 @@ void App::__on_addToCartButton_clicked() {
 	this->__refreshCartTable();
 }
 
-void App::__refreshCartTable() {
-	std::vector<Film> films = this->__ctrl.getCartMovies();
-	std::string tmp = "Total: " + std::to_string(films.size());
+void App::__reloadCartTable(const std::vector<Film>& films) {
+	std::string tmp{ "Total: " + std::to_string(films.size()) };
 	this->__labelCartMoviesNumber->setText(tmp.c_str());
 	this->__cartTableModel = new MoviesTableModel(films);
 	this->__cartTableView->setModel(this->__cartTableModel);
 	this->__cartTableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+}
+
+void App::__refreshCartTable() {
+	std::vector<Film>& films = this->__ctrl.getCartMovies();
+	this->__reloadCartTable(films);
 
 
 }
@@ -393,6 +421,51 @@ void App::__on_manageCartButton_clicked() {
 
 void App::__on_quitButton_clicked() {
 	qApp->quit();
+}
+
+void App::__on_fillCartRandomButton_clicked() {
+	int howMany { this->__fillCartRandomLineEdit->text().toInt() };
+	this->__ctrl.fillCartRandom(howMany);
+	this->__refreshCartTable();
+}
+
+void App::__on_deleteFromCartButton_clicked() {
+	std::string errors{ "" };
+	QModelIndexList selectedRows = this->__cartTableView->selectionModel()->selectedRows();
+	if (selectedRows.empty()) {
+		this->__displayError("You have not selected any movie yet");
+		return;
+	}
+	for (auto& index : selectedRows) {
+		int row = index.row();
+		std::string title = index.sibling(row, 0).data().toString().toStdString();
+		try {
+			this->__ctrl.delFromCart(title);
+		}
+		catch (FilmException& ex) {
+			errors += ex.getMsg() + "\n";
+		}
+	}
+	this->__refreshCartTable();
+
+	if (!errors.empty()) {
+		this->__displayError(errors);
+	}
+}
+
+void App::__on_clearCartButton_clicked() {
+	this->__ctrl.clearCart();
+	this->__refreshCartTable();
+}
+
+void App::__on_exportCartButton_clicked() {
+	std::string fileName{ this->__exportFileNameLineEdit->text().toStdString() };
+	if (fileName.empty()) {
+		this->__displayError("You have not entered the filename!");
+		return;
+	}
+	this->__ctrl.writeCartToFile(fileName);
+	this->__displayError("Exported as html!");
 }
 
 App::~App() {

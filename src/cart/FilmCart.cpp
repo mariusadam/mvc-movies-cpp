@@ -38,3 +38,12 @@ void FilmCart::fillRandom(const int howMany) {
 		all.pop_back();
 	}
 }
+
+void FilmCart::del(const std::string& title) {
+	auto filmIt = std::find_if(this->__movies.begin(), this->__movies.end(), [&](const Film& film) {return film.getTitle() == title; });
+	if (filmIt == this->__movies.end()) {
+		//qDebug() << film.getTitle().c_str() << film.getGen().c_str() << film.getReleaseYear() << film.getMainActor().c_str() << "'\n";
+		throw RepositoryException("Error in cart: trying to delete unexistent film!");
+	}
+	this->__movies.erase(filmIt);
+}
