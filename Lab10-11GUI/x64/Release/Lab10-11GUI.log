@@ -1,0 +1,21 @@
+﻿  Moc'ing app.h...
+  Uic'ing app.ui...
+  Rcc'ing app.qrc...
+RCC : warning : No resources in 'F:\workspace_visual_studio\oop\Lab10-11GUI\Lab10-11GUI\app.qrc'.
+  
+  moc_app.cpp
+  app.cpp
+  main.cpp
+  FilmCart.cpp
+  controller.cpp
+  Film.cpp
+  FilmValidator.cpp
+  FileRepository.cpp
+  repository.cpp
+  test_Film.cpp
+  test_FilmValidator.cpp
+  test_DynamicVector.cpp
+  DynamicVector.cpp
+  Generating Code...
+  qrc_app.cpp
+  Lab10-11GUI.vcxproj -> F:\workspace_visual_studio\oop\Lab10-11GUI\x64\Release\Lab10-11GUI.exe
