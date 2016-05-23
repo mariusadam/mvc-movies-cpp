@@ -1,0 +1,6 @@
+﻿  console.cpp
+f:\workspace_visual_studio\oop\lab7_stl\lab7_stl\src\ui\console.cpp(206): warning C4018: '>': signed/unsigned mismatch
+  controller.cpp
+  Lab7.cpp
+  Generating Code...
+  Lab7_STL.vcxproj -> F:\workspace_visual_studio\oop\Lab7_STL\Debug\Lab7_STL.exe
